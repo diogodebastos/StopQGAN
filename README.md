@@ -1,2 +1,2 @@
-# stopQGAN
-Using QGANs to generate stop CMS signals
+# StopQGAN
+Using Quantum Generative Adversarial Networks (QGANs) to generate stop CMS signals
