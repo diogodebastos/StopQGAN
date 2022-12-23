@@ -1,0 +1,39 @@
+\section{Introduction}
+\label{sec:intro}
+
+One of the main objectives of \gls{qti} is to investigate if \gls{qc} can be 
+used in the field of \gls{hep} in the \gls{nisq} era. Noisy means that, currently,
+we have imperfect control over qubits. Intermediate refers to the number of qubits
+our present quantum computers have. They range from 50 to a few hundred. 
+In order to fully fulfill the promise of quantum computing, the challenges of
+noise and scalability (millions of qubits) needs to be solved. Nonetheless, we
+can already use the available quantum computers and algorithms to tackle present
+challenges. 
+
+\gls{qml} is a growing research area that explores the interplay of ideas from \gls{qc} 
+and machine learning. This project explores the use of \glspl{qgan}~\cite{Zoufal_2019}, 
+a \gls{qml} algorithm, to learn the kinematic distributions of stop four-body 
+decays~\cite{ph-brief-stop} in \gls{cms} data. the Feynman diagram for such process 
+is represented in Figure~\ref{fig:model}. In \gls{hep}, to simulate such 
+distributions, \gls{mc} simulations are used in a very convoluted and computational
+resources hungry process that can take up months. As we will see, the method 
+presented in this project could speed up this process significantly when run on 
+quantum computers. This method could also be used for data augmentation of the 
+\gls{mc} generated samples which would be helpful in the training of the 
+classification algorithms in many \gls{hep} searches improving the sensitivity of
+such searches.
+
+\clearpage
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.70\textwidth]{figures/Figure_001.pdf}
+\caption{Diagram of top squark pair production $\stp \stpb$ in $\Pp\Pp$ collisions, 
+with a four-body decay of each top squark.}
+\label{fig:model}
+\end{figure}
+
+This project will be run on a classical computer (my personal laptop) simulating
+a quantum computer with 5 qubits using pennylane~\cite{pennylane} to train and 
+optimize the quantum algorithm, and cirq~\cite{cirq} for writing, manipulating, 
+and running the quantum simulator.

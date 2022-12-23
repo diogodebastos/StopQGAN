@@ -1,0 +1,81 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{graphicx}
+\usepackage{pythonhighlight}
+\usepackage[useregional]{datetime2}
+\usepackage{glossaries}
+\usepackage[english]{babel}
+\usepackage{ragged2e}
+\usepackage{blindtext}
+\usepackage[italic,italicGreek]{heppennames2}
+\usepackage{url}
+\usepackage{biblatex}
+\bibliography{stopqgan.bib}
+%\usepackage[square,numbers,sort&compress]{natbib}
+%\usepackage{biblatex}
+
+
+\newcommand{\stp}{\ensuremath{\PSQt_{1}}\xspace}
+\newcommand{\stpb}{\ensuremath{{\PASQt}}_{1}\xspace}
+
+\makeglossaries
+\loadglsentries{acronyms.tex}
+
+\begin{document}
+%\setlength{\hsize}{0.9\hsize}
+
+%%% TITLE
+
+\pagenumbering{gobble}
+
+%\maketitle
+\vspace{30mm}
+\centering
+\LARGE \textbf{A practical use case for Quantum Generative Adversarial Networks 
+in High Energy Physics}\\
+\vspace{5mm}
+\large Generating top squark events decaying via the four-body mode in 
+single-lepton final states in proton-proton collisions at $\sqrt{s}=13$ TeV\\
+\vspace{15mm}
+\Large \textbf{Diogo Carlos Chasqueira de Bastos} \\
+\vspace{15mm}
+\centering
+\large \textbf{Advanced Topics in Particle and Astroparticle Physics II} \\
+\date{\today}
+\vspace{15mm}
+
+\begin{abstract}
+This is a simple paragraph at the beginning of the 
+document. A brief introduction about the main subject.
+\end{abstract}
+
+%%% ROMAN
+
+\clearpage
+\setcounter{page}{1} \pagenumbering{roman}
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+\printglossary[type=\acronymtype]
+\clearpage
+
+%%% ARABIC
+
+\pagenumbering{arabic} \setcounter{page}{1}
+\justifying
+
+\input{intro.tex}
+
+\clearpage
+%\addcontentsline{toc}{part}{Bibliography}
+%\bibliography{stopqgan}{}
+%\bibliographystyle{plain}
+%\bibliographystyle{IEEEtranN}
+%\bibliographystyle{unsrt}
+\printbibliography
+\clearpage
+
+\end{document}
