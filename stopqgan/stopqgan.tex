@@ -9,6 +9,7 @@
 \usepackage{blindtext}
 \usepackage[italic,italicGreek]{heppennames2}
 \usepackage{url}
+\usepackage{lineno}
 \usepackage{biblatex}
 \bibliography{stopqgan.bib}
 %\usepackage[square,numbers,sort&compress]{natbib}
@@ -67,7 +68,10 @@ document. A brief introduction about the main subject.
 \pagenumbering{arabic} \setcounter{page}{1}
 \justifying
 
-\input{intro.tex}
+\input{1_intro.tex}
+\input{2_qc.tex}
+\input{3_demo.tex}
+\input{4_res.tex}
 
 \clearpage
 %\addcontentsline{toc}{part}{Bibliography}
