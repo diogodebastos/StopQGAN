@@ -12,7 +12,7 @@ challenges.
 
 \gls{qml} is a growing research area that explores the interplay of ideas from \gls{qc} 
 and machine learning. This project explores the use of \glspl{qgan}~\cite{Zoufal_2019}, 
-a \gls{qml} algorithm, to learn the kinematic distributions of stop four-body 
+a \gls{qml} algorithm, to learn the kinematic distributions of the top squark (or stop) four-body 
 decays~\cite{ph-brief-stop} in \gls{cms} data. The Feynman diagram for such process 
 is represented in Figure~\ref{fig:model}. In \gls{hep} to simulate such 
 distributions, \gls{mc} simulations are used in a very convoluted and computational
@@ -33,10 +33,11 @@ with a four-body decay of each top squark.}
 \label{fig:model}
 \end{figure}
 
-This project will be run on a classical computer (my personal laptop) simulating
-a quantum computer with 5 qubits using pennylane~\cite{pennylane} to train and 
-optimize the quantum algorithm, and cirq~\cite{cirq} for writing, manipulating, 
-and running the quantum simulator.
+This project is implemented in python~\cite{python} and will be run on a 
+classical computer (my personal laptop) simulating a quantum computer with five 
+qubits using pennylane~\cite{pennylane} to train and optimize the quantum 
+algorithm, and cirq~\cite{cirq} for writing, manipulating, and running the 
+quantum simulator.
 Since \gls{qml} is a novel technique in \gls{hep}, after the present Section~\ref{sec:intro},
 a brief introduction to \gls{qc} and the necessary operations needed for the 
 final algorithm are presented in Section~\ref{sec:qc}. 

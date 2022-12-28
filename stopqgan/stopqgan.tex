@@ -8,8 +8,11 @@
 \usepackage{ragged2e}
 \usepackage{blindtext}
 \usepackage[italic,italicGreek]{heppennames2}
+\usepackage{ptdr-definitions}
 \usepackage{url}
 \usepackage{lineno}
+\usepackage{hyperref}
+
 \usepackage{biblatex}
 \bibliography{stopqgan.bib}
 %\usepackage[square,numbers,sort&compress]{natbib}
@@ -18,6 +21,9 @@
 
 \newcommand{\stp}{\ensuremath{\PSQt_{1}}\xspace}
 \newcommand{\stpb}{\ensuremath{{\PASQt}}_{1}\xspace}
+\newcommand{\lsp}{\PSGczDo}
+\newcommand{\ptl}{\ensuremath{\pt(\ell)}\xspace}
+\newcommand{\ptisr}{\ensuremath{\pt(\mathrm{ISR})}}
 
 \makeglossaries
 \loadglsentries{acronyms.tex}
@@ -69,11 +75,14 @@ document. A brief introduction about the main subject.
 \justifying
 
 \input{1_intro.tex}
-\input{2_qc.tex}
-\input{3_demo.tex}
-\input{4_res.tex}
-
 \clearpage
+\input{2_qc.tex}
+\clearpage
+\input{3_demo.tex}
+\clearpage
+\input{4_sum.tex}
+\clearpage
+
 %\addcontentsline{toc}{part}{Bibliography}
 %\bibliography{stopqgan}{}
 %\bibliographystyle{plain}

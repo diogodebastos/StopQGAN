@@ -1,6 +1,10 @@
 \section{A Brief Introduction to Quantum Computing}
 \label{sec:qc}
 
+In order to develop a \gls{qgan} and apply it in the context of \gls{hep} it is
+important to first go over the \gls{qc} concepts necessary to design this 
+algorithm. Section~\ref{sec:qc} focus on that.
+
 \subsection{Meet the Qubit}
 \label{sec:qubit}
 
@@ -120,7 +124,7 @@ gate to a qubit in state $\vert 0 \rangle$ flipping it to state $\vert 1 \rangle
 \end{equation}
 \end{linenomath}
 
-\subsection{Rotations, rotations, rotations: the $R_X(\theta)$, $R_Y(\theta)$, and $R_Z(\theta)$ Gates}
+\subsection{Rotations, rotations, rotations: the RX, RY, and RZ Gates}
 \label{sec:rot}
 
 One of the most relevant operations to the qubit in the context \gls{qml} are 
@@ -186,7 +190,7 @@ circuit diagram.}
 \label{fig:rotscirc}
 \end{figure}
 
-\subsection{Superposition and the $Hadamard$ Gate}
+\subsection{Superposition and the Hadamard Gate}
 \label{sec:hada}
 
 The Hadamard gate, $H$, is a fundamental quantum gate that allows to move away 
@@ -287,7 +291,7 @@ simulate. A modern laptop can simulate a general quantum state of around 10
 qubits, but simulating 100 qubits is too difficult even for the largest 
 supercomputers.
 
-\subsection{Entanglement and the $CNOT$ Gate}
+\subsection{Entanglement and the CNOT Gate}
 \label{sec:cnot}
 
 Until now, only gates that act on a single qubit have been described. In order
@@ -359,15 +363,9 @@ that:
 
 \begin{linenomath}
 \begin{equation}
-\vert q_0 \rangle = \frac{1}{\sqrt{2}} (\vert 0 \rangle + \vert 1 \rangle)
-\label{eq:q0}
-\end{equation}
-\end{linenomath}
-
-\begin{linenomath}
-\begin{equation}
+\vert q_0 \rangle = \frac{1}{\sqrt{2}} (\vert 0 \rangle + \vert 1 \rangle), 
 \vert q_1 \rangle = \vert 0 \rangle
-\label{eq:q1}
+\label{eq:q0}
 \end{equation}
 \end{linenomath}
 
@@ -390,7 +388,27 @@ CNOT\vert q_0q_1 \rangle = \frac{1}{\sqrt{2}} (\vert 00 \rangle + \vert 11 \rang
 \end{equation}
 \end{linenomath}
 
-\subsection{qGANS}
-\label{sec:qgan}
+\subsection{Quantum Generative Adversarial Network}
+\label{sec:qgans}
 
-QGANs are fundamentally composed of two Quantum Neural Networks (QNNs) - a generator and a discriminator one - that compete between each other. The generative network generates candidates while the discriminative network evaluates them. The contest operates in terms of data distributions. Typically, the generative network learns to map from a latent space to a data distribution of interest, while the discriminative network distinguishes candidates produced by the generator from the true data distribution. The generative network's training objective is to increase the error rate of the discriminative network (i.e., "fool" the discriminator network by producing novel candidates that the discriminator thinks are not synthesized (are part of the true data distribution)).
+\glspl{qgan} are fundamentally composed of two \glspl{qnn}, a generator and a 
+discriminator, that compete between each other. The generative network generates
+candidates while the discriminating network evaluates them. The contest operates
+in terms of data distributions. Typically, the generative network learns to map 
+from a latent space to a data distribution of interest, while the discriminating
+network distinguishes candidates produced by the generator from the true data 
+distribution. The generative network training objective is to increase the error
+rate of the discriminative network (i.e., "fool" the discriminator network by 
+producing novel candidates that the discriminator thinks are part of the true 
+data distribution). Figure~\ref{fig:qgan_generic} represents this idea.
+
+This project will focus on the technical implementation details of a \gls{qgan} 
+that can generate a 2-qubit state.
+
+\begin{figure}[!htbp]
+\centering
+	\includegraphics[width=0.70\textwidth]{figures/qgan_generic.pdf} \\
+	\includegraphics[width=0.70\textwidth]{figures/qgan_generic2.pdf}
+\caption{Representation of a generic \gls{qgan}.}
+\label{fig:qgan_generic}
+\end{figure}
