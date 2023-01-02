@@ -23,9 +23,9 @@ def cartesian_to_spherical(x,y,z):
     if x > 0:
         phi = np.arctan(y/x)
     elif x < 0 and y >= 0:
-        phi = np.arctan(y/x) - np.pi
-    elif x < 0 and y < 0:
         phi = np.arctan(y/x) + np.pi
+    elif x < 0 and y < 0:
+        phi = np.arctan(y/x) - np.pi
     elif x == 0 and y > 0:
         phi = np.pi/2
     elif x == 0 and y < 0:
@@ -177,17 +177,11 @@ def invert_minmax(X_scaled,min,max,feature):
     X=X_std*(feature.max()-feature.min())+feature.min()
     return X
 
-def theta_to_lepPt(theta):
-    return invert_minmax(theta,0,np.pi,sgLepPt)
+def theta_to_feature(theta,feature):
+    return invert_minmax(theta,0,np.pi,feature)
 
-def phi_to_lepChg(phi):
-    return np.sign(invert_minmax(phi,0,np.pi,sgLepChg))
-
-def theta_to_Met(theta):
-    return invert_minmax(theta,0,np.pi,sgMet)
-
-def phi_to_lepEta(phi):
-    return invert_minmax(phi,0,2*np.pi,sgLepEta)
+def phi_to_feature(phi,feature):
+    return invert_minmax(phi,0,2*np.pi,feature)
 
 def infoQu(name,angles,bv_real,bv_fake):
     tlist = np.linspace(0, 1, 40)
@@ -199,7 +193,10 @@ def infoQu(name,angles,bv_real,bv_fake):
     THETA,PHI=cartesian_to_spherical(X,Y,Z)
     Xf,Yf,Zf = bv_fake
     THETAf,PHIf=cartesian_to_spherical(Xf,Yf,Zf)
-    
+    phi = abs(phi)
+    PHI = abs(PHI)
+    PHIf = abs(PHIf)
+
     bloch = Bloch()
     
     vec_og=[x,y,z]
@@ -222,7 +219,7 @@ def infoQu(name,angles,bv_real,bv_fake):
     print("real | X,Y,Z: {0:.3f} {1:.3f} {2:.3f}".format(X,Y,Z))
     print("fake | X,Y,Z: {0:.3f} {1:.3f} {2:.3f}".format(Xf,Yf,Zf))
     
-    bloch.save("results/"+name+".pdf")
+    bloch.save("results_7C/"+name+".pdf")
 
     return THETA, PHI, THETAf, PHIf, theta, phi
 
@@ -234,7 +231,7 @@ if __name__ == "__main__":
     parser.add_argument('-e', '--event', type=int, required=True, help='Event')
     args = parser.parse_args()
     ev_idx = args.event
-    sys.stdout = open("results/"+str(ev_idx)+".log", "w")
+    sys.stdout = open("results_7C/"+str(ev_idx)+".log", "w")
     print("Log for event: "+str(ev_idx))
     
     path = "/Users/ketchum/Desktop/STOP_nTuples/"
@@ -252,20 +249,24 @@ if __name__ == "__main__":
     # select important events
     sgDict = sgTree.arrays(branches,preSel,library="np")
     
-    sgLepPt  = sgDict["LepPt"]
     sgLepChg = sgDict["LepChg"]
     sgLepEta = sgDict["LepEta"]
+    sgJet1Pt = sgDict["Jet1Pt"]
+    
+    sgLepPt  = sgDict["LepPt"]
+    sgmt  = sgDict["mt"]
+    sgDrJetHBLep = sgDict["DrJetHBLep"]
     sgMet = sgDict["Met"]
 
     lepPt_to_theta = minmax_scale(sgLepPt, feature_range=(0, np.pi))
-    lepChg_to_phi = minmax_scale(sgLepChg, feature_range=(0, np.pi))
-    lepEta_to_phi = minmax_scale(sgLepEta, feature_range=(0, 2*np.pi))
-    Met_to_theta = minmax_scale(sgMet, feature_range=(0, np.pi))
+    mt_to_phi = minmax_scale(sgmt, feature_range=(0, 2*np.pi))
+    DrJetHBLep_to_eta = minmax_scale(sgDrJetHBLep, feature_range=(0, np.pi))
+    Met_to_phi  = minmax_scale(sgMet, feature_range=(0, 2*np.pi))
 
-    angles=[lepPt_to_theta[ev_idx],lepChg_to_phi[ev_idx],Met_to_theta[ev_idx],lepEta_to_phi[ev_idx]]
+    angles=[lepPt_to_theta[ev_idx],mt_to_phi[ev_idx],DrJetHBLep_to_eta[ev_idx],Met_to_phi[ev_idx]]
 
-    x1,y1,z1=spherical_to_cartesian(lepPt_to_theta[ev_idx],lepChg_to_phi[ev_idx])
-    x2,y2,z2=spherical_to_cartesian(Met_to_theta[ev_idx],lepEta_to_phi[ev_idx])
+    x1,y1,z1=spherical_to_cartesian(lepPt_to_theta[ev_idx],mt_to_phi[ev_idx])
+    x2,y2,z2=spherical_to_cartesian(DrJetHBLep_to_eta[ev_idx],Met_to_phi[ev_idx])
 
     np.random.seed(42)
     eps = 1e-2
@@ -284,14 +285,26 @@ if __name__ == "__main__":
     gen_loss = []
 
     print("Cycle 1")
-    train_disc(20,disc_loss)
-    train_gen(5,gen_loss)
+    train_disc(45,disc_loss)
+    train_gen(10,gen_loss)
     print("\nCycle 2")
-    train_disc(20,disc_loss)
-    train_gen(5,gen_loss)
+    train_disc(30,disc_loss)
+    train_gen(10,gen_loss)
     print("\nCycle 3")
     train_disc(20,disc_loss)
-    train_gen(5,gen_loss)
+    train_gen(10,gen_loss)
+    print("\nCycle 4")
+    train_disc(15,disc_loss)
+    train_gen(10,gen_loss)
+    print("\nCycle 5")
+    train_disc(10,disc_loss)
+    train_gen(10,gen_loss)
+    print("\nCycle 6")
+    train_disc(10,disc_loss)
+    train_gen(10,gen_loss)
+    print("\nCycle 7")
+    train_disc(10,disc_loss)
+    train_gen(10,gen_loss)
 
     print(" Prob. real as real: {:.3f} %".format(prob_real_true(disc_weights).numpy()*100))
     print(" Prob. fake as real: {:.3f} %".format(prob_fake_true(gen_weights, disc_weights).numpy()*100))
@@ -324,10 +337,9 @@ if __name__ == "__main__":
     THETA1, PHI1, THETAf1, PHIf1, theta1, phi1 = infoQu(str(ev_idx)+"_Q1",angles[:2],bv_real[:3],bv_fake[:3])
     THETA2, PHI2, THETAf2, PHIf2, theta2, phi2 = infoQu(str(ev_idx)+"_Q2",angles[2:],bv_real[3:],bv_fake[3:])
 
-    print("\n\nev: {0:.0f} | LepPt | LepChg | MET | LepEta".format(ev_idx))
+    print("\n\nev: {0:.0f} | LepPt | mt   | DR  | Met".format(ev_idx))
     print("-------------------------------------")
-    print("og     |  {0:.1f}  |   {1:.0f}    | {2:.0f} | {3:.2f}".format(theta_to_lepPt(theta1),phi_to_lepChg(phi1),theta_to_Met(theta2),phi_to_lepEta(phi2)))
-    print("real   |  {0:.1f}  |   {1:.0f}    | {2:.0f} | {3:.2f}".format(theta_to_lepPt(THETA1),phi_to_lepChg(PHI1),theta_to_Met(THETA2),phi_to_lepEta(PHI2)))
-    print("fake   | {0:.1f}   |   {1:.0f}    | {2:.0f} | {3:.2f}".format(theta_to_lepPt(THETAf1),phi_to_lepChg(PHIf1),theta_to_Met(THETAf2),phi_to_lepEta(PHIf2)))
+    print("real   | {0:.1f}   | {1:.1f} | {2:.1f} | {3:.2f}".format(theta_to_feature(THETA1,sgLepPt),phi_to_feature(PHI1,sgmt),theta_to_feature(THETA2,sgDrJetHBLep),phi_to_feature(PHI2,sgMet)))
+    print("fake   | {0:.1f}   | {1:.1f} | {2:.1f} | {3:.2f}".format(theta_to_feature(THETAf1,sgLepPt),phi_to_feature(PHIf1,sgmt),theta_to_feature(THETAf2,sgDrJetHBLep),phi_to_feature(PHIf2,sgMet)))
     print("\t ")
     sys.stdout.close()

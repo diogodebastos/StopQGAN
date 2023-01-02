@@ -78,7 +78,7 @@ constituted by the following criteria:
 \label{eq:presel}
 \end{equation}
 \end{linenomath}
-where, \ptl is the lepto \pt, \ptmiss is the missing transverse momentum, \HT is
+where, \ptl is the lepton \pt, \ptmiss is the missing transverse momentum, \HT is
 defined as the scalar \pt sum of all jets in the event, and \ptisr the highest 
 jet \pt attributed to initial-state radiation of a parton.
 
@@ -86,46 +86,49 @@ For the next step, the kinematic distributions to be generated are chosen. The
 number of variables chosen is four. This number is limited to the fact that this
 algorithm is run on a simulated quantum computer. Ideally, if more qubits were
 available, one would like to choose as many distributions as possible. The 
-chosen kinematic variables are: the lepton \pt (\ptl), the lepton charge (Charge(l)),
-the lepton $\eta$ ($\eta(l)$), and the missing transverse momentum (\ptmiss). This
-distributions are shown in Figure~\ref{fig:features}.
+chosen kinematic variables are: the lepton \pt (\ptl), the transverse mass of 
+the lepton + \ptvecmiss system (\mt), the lepton $\eta$ ($\eta(l)$), the distance 
+in ($\eta$, $\phi$) space between the directions of the lepton and the jet with 
+the highest \cPqb tagging discriminant (\drLB), and the missing transverse 
+momentum (\ptmiss). This distributions are shown in Figure~\ref{fig:features}.
 
 \begin{figure}[!htbp]
 \centering
     \includegraphics[width=1\textwidth]{figures/features.pdf}
-\caption{Distributions of \ptl (upper left), Charge(l) (upper right), $\eta(l)$ 
+\caption{Distributions of \ptl (upper left), \mt (upper right), \drLB 
     (lower left), and \ptmiss (lower right) after the selection~\ref{eq:presel}.}
 \label{fig:features}
 \end{figure}
 
 Now that the kinematic variables have been chosen, they have to be transformed
 into angles so that later, a qubit is created in a state that translates to the
-real value of the distribution. The \ptl and \ptmiss are transformed into $\eta$
-angles, and Charge(l) and $\eta$(l) are transformed into $\phi$ angles according
-to Figure~\ref{fig:bloch}. The transformed variables are shown in 
+real value of the distribution. The \ptl and \drLB are transformed into $\eta$
+angles, and \mt and \ptmiss are transformed into $\phi$ angles according to 
+Figure~\ref{fig:bloch}. The transformed variables are shown in 
 Figure~\ref{fig:features_transformed}.
 
 \begin{figure}[!htbp]
 \centering
     \includegraphics[width=1\textwidth]{figures/features_transformed.pdf}
-\caption{Distributions of \ptl (upper left), Charge(l) (upper right), $\eta(l)$ 
-    (lower left), and \ptmiss (lower right) after the transformation.}
+\caption{Distributions of \ptl (upper left), \mt (upper right), \drLB 
+    (lower left), and \ptmiss (lower right) after the angle transformation is 
+    applied.}
 \label{fig:features_transformed}
 \end{figure}
 
 Finally, all the events in the signal samples are translated into state vectors
-of two qubits. Qubit 0 is prepared to encode the \ptl and Charge(l) of a given
-event and qubit 1 is prepared to encode the \ptmiss and $\eta$(l). 
+of two qubits. Qubit 0 is prepared to encode the \ptl and \mt of a given
+event and qubit 1 is prepared to encode \drLB and \ptmiss. 
 Figure~\ref{fig:features_qubits} helps to visualize this.
 
 \begin{figure}[!htbp]
 \centering
-    \includegraphics[width=0.49\textwidth]{../assets/bloch1.pdf}
-    \includegraphics[width=0.49\textwidth]{../assets/bloch2.pdf} \\
-    \includegraphics[width=0.49\textwidth]{../assets/bloch_event680_1.pdf}
-    \includegraphics[width=0.49\textwidth]{../assets/bloch_event680_2.pdf} \\
+    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch1.pdf}
+    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch2.pdf} \\
+    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch_event0_1.pdf}
+    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch_event0_2.pdf} \\
 \caption{On top: all the possible states of qubit 0 and qubit 1. On the bottom,
-the example of a single signal event in qubit 0 and qubit2.}
+the example of a single signal event in qubit 0 and qubit 1.}
 \label{fig:features_qubits}
 \end{figure}
 
@@ -169,9 +172,9 @@ rotates the qubits 0 and 1 in state $\vert 0 \rangle$ to the desired position
 reflecting the kinematics of the event:
 \begin{python}
 angles=[lepPt_to_theta[event],
-        lepChg_to_phi[event],
-        Met_to_theta[event],
-        lepEta_to_phi[event]]
+        mt_to_phi[event],
+        DrJetHBLep_to_eta[event],
+        Met_to_phi[event]]
 
 def real(angles, **kwargs):
     qml.RY(angles[0], wires=0)
@@ -388,9 +391,10 @@ def gen_cost(gen_weights):
 \label{sec:vs}
 
 Both the initial weights for the discriminator and the generator are randomly
-initialized. At this level, the probability for the discriminator to classify 
-real data as true is $\approx$90\% and the probability to classify generated 
-data as true is $\approx$60\%. 
+initialized. 
+%At this level, the probability for the discriminator to classify 
+%real data as true is $\approx$8\% and the probability to classify generated 
+%data as true is $\approx$58\%. 
 The Stochastic Gradient Descent Optimizer~\cite{SGC} is used to minimize both 
 cost functions and find the best discriminator and generator weights. Next,
 the training functions are defined:
@@ -408,12 +412,12 @@ def train_gen(it,gen_loss):
         opt.minimize(cost, gen_weights)
 \end{python}
 
-The complete train of the \gls{qgan} consists in repeating 3 times a training 
-cycle. A training cycle is defined by training the discriminator for 20 
-iterations and then by training the generator for 5 iterations.
+The complete train of the \gls{qgan} consists in repeating 7 times a training 
+cycle. A training cycle is defined by training the discriminator followed by 
+training the generator.
 At the end of the complete train, the probability for the discriminator to 
-classify real data as true is $\approx$83\% and the probability to classify 
-generated data as true is $\approx$99\%. A complete train takes $\approx$20 
+classify real data as true is $\approx$75\% and the probability to classify 
+generated data as true is $\approx$99\%. A complete train takes $\approx$35 
 minutes in my personal computer, this for a single event.
 
 \begin{figure}[!htbp]
@@ -427,35 +431,39 @@ minutes in my personal computer, this for a single event.
 \subsection{Results}
 \label{sec:res}
 
-We can now compare the real data with the generated one in Figure~\ref{fig:bloschres680} 
+We can now compare the real data with the generated one in Figure~\ref{fig:bloschres} 
 and transform the generated qubits into the generated events kinematics. The 
 latter is reported in Table~\ref{tab:res}.
 
 \begin{figure}[!htbp]
 \centering
-    \includegraphics[width=0.49\textwidth]{figures/bloschres680_1.pdf}
-    \includegraphics[width=0.49\textwidth]{figures/bloschres680_2.pdf}
+    \includegraphics[width=0.43\textwidth]{../results_7C/1360_Q1.pdf}
+    \includegraphics[width=0.43\textwidth]{../results_7C/1360_Q2.pdf} \\
+    \includegraphics[width=0.43\textwidth]{../results_7C/1785_Q1.pdf}
+    \includegraphics[width=0.43\textwidth]{../results_7C/1785_Q2.pdf} \\
+    \includegraphics[width=0.43\textwidth]{../results_7C/3400_Q1.pdf}
+    \includegraphics[width=0.43\textwidth]{../results_7C/3400_Q2.pdf} \\
 \caption{Comparison in the Bloch sphere of the real data (in blue) with the 
-        generated one (in purple) for both qubits 0 and 1.}
-\label{fig:bloschres680}
+        generated one (in pink) for both qubits 0 and 1.}
+\label{fig:bloschres}
 \end{figure}
 
 \begin{table}[!htbp]
 \centering
-\caption{Comparison of the event kinematics between the real and generated events.}
+\caption{Comparison of the event kinematics between the real and generated 
+        events reported in Figure~\ref{fig:bloschres}.}
 \begin{tabular}{lcccc}
-Data      & \ptl [GeV] & Charge(l) & $\eta$(l) & \ptmiss [GeV]\\
+Data      & \ptl [GeV] & \mt [GeV] & \drLB & \ptmiss [GeV] \\
 \hline
-real      &  8.7        &  1        & 0.90      & 685           \\
-generated & 13.3        &  1        & 0.95      & 748           \\
+real   & 9.9   & 101.5 & 1.8 & 514.15 \\
+fake   & 13.7   & 72.8 & 1.5 & 458.85 \\
+\hline
+real      & 5.6   & 20 & 2.0 & 368 \\
+generated & 5.3   & 23 & 2.1 & 493 \\
+\hline
+real      & 18.9   & 81 & 3.1 & 340 \\
+generated & 20.6   & 42 & 3.3 & 377 \\ 
 \end{tabular}
 \label{tab:res}
 \end{table}
 
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\subsection{tmp}
-\label{sec:tmp}
-
-\begin{python}
-\end{python}

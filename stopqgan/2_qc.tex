@@ -3,7 +3,7 @@
 
 In order to develop a \gls{qgan} and apply it in the context of \gls{hep} it is
 important to first go over the \gls{qc} concepts necessary to design this 
-algorithm. Section~\ref{sec:qc} focus on that.
+algorithm.
 
 \subsection{Meet the Qubit}
 \label{sec:qubit}
@@ -92,7 +92,7 @@ simplest quantum operation as the following effect:
 \end{equation}
 \end{linenomath}
 
-Known as bit flip, $Pauli\rm{-}X$ or $NOT$ gate, it can be mathematically represented as:
+Known as bit flip, $Pauli\mathrm{-}X$ or $NOT$ gate, it can be mathematically represented as:
 
 \begin{linenomath}
 \begin{equation}
@@ -106,16 +106,15 @@ Known as bit flip, $Pauli\rm{-}X$ or $NOT$ gate, it can be mathematically repres
 
 Figure~\ref{fig:circuitX} represents the qubit flip gate in a quantum circuit 
 diagram.
+Equation~\ref{eq:flipped} shows the mathematical operation of applying the $NOT$
+gate to a qubit in state $\vert 0 \rangle$ flipping it to state $\vert 1 \rangle$.
 
 \begin{figure}[!htbp]
 \centering
 	\includegraphics[width=0.40\textwidth]{figures/X.pdf}
-\caption{The $Pauli\rm{-}X$ or $NOT$ gate in a quantum circuit.}
+\caption{The $Pauli\mathrm{-}X$ or $NOT$ gate in a quantum circuit.}
 \label{fig:circuitX}
 \end{figure}
-
-Equation~\ref{eq:flipped} shows the mathematical operation of applying the $NOT$
-gate to a qubit in state $\vert 0 \rangle$ flipping it to state $\vert 1 \rangle$.
 
 \begin{linenomath}
 \begin{equation}
@@ -138,16 +137,8 @@ be trained.
 
 As it was shown, a qubit can be represented in 3D-space by the Bloch sphere. 
 Using the same representation, $R_X(\theta)$, $R_Y(\theta)$, and $R_Z(\theta)$ 
-are shown in Figure~\ref{fig:rots}.
-
-\begin{figure}[!htbp]
-\centering
-	\includegraphics[width=1\textwidth]{figures/rotations.pdf}
-\caption{The $R_X(\theta)$, $R_Y(\theta)$, and $R_Z(\theta)$ gates in a the Bloch sphere.}
-\label{fig:rots}
-\end{figure}
-
-The matrix representation of these rotations:
+are shown in Figure~\ref{fig:rots} while Figure~\ref{fig:rotscirc} represents 
+these gates in a quantum circuit diagram. The matrix representation is:
 
 \begin{linenomath}
 \begin{equation}
@@ -177,8 +168,12 @@ e^{\frac{-i\theta}{2}} & 0 \\
 \end{equation}
 \end{linenomath}
 
-Figure~\ref{fig:rotscirc} represents the $R_X(\theta)$, $R_Y(\theta)$, 
-and $R_Z(\theta)$ gates in a quantum circuit diagram.
+\begin{figure}[!htbp]
+\centering
+	\includegraphics[width=1\textwidth]{figures/rotations.pdf}
+\caption{The $R_X(\theta)$, $R_Y(\theta)$, and $R_Z(\theta)$ gates in a the Bloch sphere.}
+\label{fig:rots}
+\end{figure}
 
 \begin{figure}[!htbp]
 \centering
@@ -247,8 +242,7 @@ To describe a state of 2 qubits, 4 complex amplitudes are required:
 \label{eq:multiq}
 \end{equation}
 \end{linenomath}
-
-Such that the normalization condition is respected:
+while respecting the normalization condition:
 
 \begin{linenomath}
 \begin{equation}
@@ -287,8 +281,8 @@ b_1 \times \begin{bmatrix} a_0 \\ a_1 \end{bmatrix}
 
 For a computation with $n$ qubits, a computer needs to keep track of $2^n$
 complex amplitudes. This is the reason why quantum computers are difficult to 
-simulate. A modern laptop can simulate a general quantum state of around 10 
-qubits, but simulating 100 qubits is too difficult even for the largest 
+simulate. A modern laptop can typically simulate a general quantum state of five
+to ten qubits, but simulating 100 qubits is too difficult even for the largest 
 supercomputers.
 
 \subsection{Entanglement and the CNOT Gate}
@@ -315,7 +309,7 @@ the full state. One example of an entangled state:
 \end{linenomath}
 
 In order to describe this state using the kronecker tensor one needs to find 
-$a_0$, $a_1$, $b_0$ and $b_0$ such that: 
+$a_0$, $a_1$, $b_0$ and $b_1$ such that: 
 
 \begin{linenomath}
 \begin{equation}
@@ -333,8 +327,8 @@ and that would immediately contradict the other equation. Therefore, there is no
 solution, it's not possible to describe this state as two separate qubits. They 
 are entangled.
 
-The $controlled\rm{-}NOT$ or $CNOT$ gate can make an entangled state by performing 
-the $Pauli\rm{-}X$ operation on one target qubit depending on the state of 
+The $controlled\mathrm{-}NOT$ or $CNOT$ gate can make an entangled state by performing 
+the $Pauli\mathrm{-}X$ operation on one target qubit depending on the state of 
 another control qubit. Mathematically represented as:
 
 \begin{linenomath}
@@ -354,7 +348,7 @@ Figure~\ref{fig:cnot} represents the $CNOT$ gate in a quantum circuit diagram.
 \begin{figure}[!htbp]
 \centering
 	\includegraphics[width=0.40\textwidth]{figures/CNOT.pdf}
-\caption{The $controlled\rm{-}NOT$ or $CNOT$ gate in a quantum circuit.}
+\caption{The $controlled\mathrm{-}NOT$ or $CNOT$ gate in a quantum circuit.}
 \label{fig:cnot}
 \end{figure}
 
@@ -376,31 +370,30 @@ entangled state is achieved.
 
 \begin{linenomath}
 \begin{equation}
-CNOT\vert q_0q_1 \rangle = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \\ 0 & 1 & 0 & 0 \end{bmatrix} \begin{bmatrix} 1\\1\\0\\0 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1\\0\\0\\1 \end{bmatrix} 
+\resizebox{\hsize}{!}{$CNOT\vert q_0q_1 \rangle = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \\ 0 & 1 & 0 & 0 \end{bmatrix} \begin{bmatrix} 1\\1\\0\\0 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1\\0\\0\\1 \end{bmatrix} = \frac{1}{\sqrt{2}} (\vert 00 \rangle + \vert 11 \rangle)$}
 \label{eq:cnot1}
-\end{equation}
-\end{linenomath}
-
-\begin{linenomath}
-\begin{equation}
-CNOT\vert q_0q_1 \rangle = \frac{1}{\sqrt{2}} (\vert 00 \rangle + \vert 11 \rangle)
-\label{eq:cnot2}
 \end{equation}
 \end{linenomath}
 
 \subsection{Quantum Generative Adversarial Network}
 \label{sec:qgans}
 
-\glspl{qgan} are fundamentally composed of two \glspl{qnn}, a generator and a 
-discriminator, that compete between each other. The generative network generates
-candidates while the discriminating network evaluates them. The contest operates
-in terms of data distributions. Typically, the generative network learns to map 
-from a latent space to a data distribution of interest, while the discriminating
-network distinguishes candidates produced by the generator from the true data 
-distribution. The generative network training objective is to increase the error
-rate of the discriminative network (i.e., "fool" the discriminator network by 
-producing novel candidates that the discriminator thinks are part of the true 
-data distribution). Figure~\ref{fig:qgan_generic} represents this idea.
+\glspl{gan} are a class of \gls{ml} frameworks where two neural networks contest
+with each other in the form of a zero-sum game, where one agent's gain is another
+agent's loss. Given a training set, this technique learns to generate new data 
+with the same statistics as the training set. 
+
+Similarly, \glspl{qgan} are a class of \gls{qml} frameworks composed of two 
+\glspl{qnn}, a generator and a discriminator, that compete between each other. 
+The generative network generates candidates while the discriminating network
+evaluates them. The contest operates in terms of data distributions. Typically, 
+the generative network learns to map from a latent space to a data distribution 
+of interest, while the discriminating network distinguishes candidates produced 
+by the generator from the true data distribution. The generative network training
+objective is to increase the error rate of the discriminative network (i.e., 
+"fool" the discriminator network by producing novel candidates that the
+discriminator thinks are part of the true data distribution). 
+Figure~\ref{fig:qgan_generic} represents this idea.
 
 This project will focus on the technical implementation details of a \gls{qgan} 
 that can generate a 2-qubit state.
