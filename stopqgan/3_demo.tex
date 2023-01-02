@@ -52,15 +52,15 @@ research where the final signal selection was based on Boosted Decision Trees
 trained on \gls{mc} simulated samples for signal and background. I noticed that
 one of the limitation to the classification algorithm was the statistical limit 
 of the training samples. One technique that could tackle this is called data 
-augmentation. In data analysis, data augmentation are techniques used to 
-increase the amount of data by adding slightly modified copies of already 
-existing data or newly created synthetic data from existing data. This project
+augmentation. In data analysis, data augmentation is used to increase the amount
+of data by adding slightly modified copies of already existing data or newly 
+created synthetic data from existing data. This project
 explores the use of such a technique in a novel way by using \gls{qc}. Signal 
 simulated samples are encoded into quantum data in order to be processed by
 a simulated quantum computer. Then, from the signal kinematic distributions, the
-\gls{qgan} learns them and generates a new event with the same characteristics 
-of the quantum data. After this, the generated event is transformed into a 
-signal type event. Thus, generating new synthetic data.
+\gls{qgan} learns them and generates new events with the same characteristics 
+of the quantum data. After this, the generated events are transformed into  
+signal type ones. Thus, generating new synthetic data.
 
 The necessary code to run this project is open-source and can be found here:
 \url{https://github.com/diogodebastos/StopQGAN/blob/main/QGAN2qu.ipynb}.
@@ -79,7 +79,7 @@ constituted by the following criteria:
 \end{equation}
 \end{linenomath}
 where, \ptl is the lepton \pt, \ptmiss is the missing transverse momentum, \HT is
-defined as the scalar \pt sum of all jets in the event, and \ptisr the highest 
+defined as the scalar \pt sum of all jets in the event, and \ptisr is the highest 
 jet \pt attributed to initial-state radiation of a parton.
 
 For the next step, the kinematic distributions to be generated are chosen. The 
@@ -87,10 +87,10 @@ number of variables chosen is four. This number is limited to the fact that this
 algorithm is run on a simulated quantum computer. Ideally, if more qubits were
 available, one would like to choose as many distributions as possible. The 
 chosen kinematic variables are: the lepton \pt (\ptl), the transverse mass of 
-the lepton + \ptvecmiss system (\mt), the lepton $\eta$ ($\eta(l)$), the distance 
-in ($\eta$, $\phi$) space between the directions of the lepton and the jet with 
-the highest \cPqb tagging discriminant (\drLB), and the missing transverse 
-momentum (\ptmiss). This distributions are shown in Figure~\ref{fig:features}.
+the lepton + \ptvecmiss system (\mt), the distance in ($\eta$, $\phi$) space 
+between the directions of the lepton and the jet with the highest \cPqb tagging
+discriminant (\drLB), and the missing transverse momentum (\ptmiss). 
+These distributions are shown in Figure~\ref{fig:features}.
 
 \begin{figure}[!htbp]
 \centering
@@ -125,8 +125,8 @@ Figure~\ref{fig:features_qubits} helps to visualize this.
 \centering
     \includegraphics[width=0.49\textwidth]{../assets_dev/bloch1.pdf}
     \includegraphics[width=0.49\textwidth]{../assets_dev/bloch2.pdf} \\
-    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch_event0_1.pdf}
-    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch_event0_2.pdf} \\
+    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch_event1360_1.pdf}
+    \includegraphics[width=0.49\textwidth]{../assets_dev/bloch_event1360_2.pdf} \\
 \caption{On top: all the possible states of qubit 0 and qubit 1. On the bottom,
 the example of a single signal event in qubit 0 and qubit 1.}
 \label{fig:features_qubits}
@@ -137,7 +137,7 @@ the number of events that can be trained on and generated. From now on, this
 project focus on learning the collective state of qubit 0 and qubit 1 of a 
 single event and generating a synthetic state of two qubits that could represent
 the initial signal sample. Ideally, this algorithm would be deployed on a quantum
-computer for every event. This will be discussed in Section~\ref{sec:res}.
+computer for every event. This will be discussed in Section~\ref{sec:sum}.
 
 \subsection{Designing a qGAN}
 \label{sec:qgan}
@@ -200,7 +200,7 @@ the design of the quantum circuit discriminator.
 \end{figure}
 
 The $input\_layer$ ensures that both qubit 0 and 1 are in a superposition and 
-entangled. The $hidden\_layer$ receive a weight (an angle) that manipulates 
+entangled. The $hidden\_layer$ receive weights (angles) that manipulate
 rotations to the qubits in order to find the best set of angles that can properly
 distinguish between real and synthetic data. The $output\_layer$ rotates qubit 4
 in all 3 axis before the output which will be the prediction of the discriminator.
@@ -235,7 +235,7 @@ def discriminator(w, **kwargs):
 \label{sec:gen}
 
 The generator is a \gls{qnn} that does not receive input data but outputs a 2 
-qubit state in qubits 0 and 1. It also has hidden layers that depend on weights.
+qubit state in qubits 0 and 1. It also has hidden layers that depends on weights.
 These weights will be optimized in order to "trick" the discriminator to think 
 that the data generated is real data. Figure~\ref{fig:gen} illustrates the 
 design of the quantum circuit generator.
@@ -248,12 +248,12 @@ design of the quantum circuit generator.
 \end{figure}
 
 
-The $first\_layer$ of the generator ensures that both qubit 0 and 1 in a 
+The $first\_layer$ of the generator ensures that both qubit 0 and 1 are in a 
 superposition and entangled. The architecture for the $generator\_layer$ is based 
-on~\cite{generator}. The $output\_layer$ rotates qubit 0 and 1 in all 3 axis,
-entangles them, and rotates them once again. This final state of qubit 0 and 1
-corresponds to the synthetic that will be fed to the discriminator. Finally, the
-$generator$ circuit is defined as:
+on Reference~\cite{generator}. The $output\_layer$ rotates qubit 0 and 1 in all 
+3 axis, entangles them, and rotates them once again. This final state of qubit 0 
+and 1 corresponds to the synthetic that will be fed to the discriminator. 
+Finally, the $generator$ circuit is defined as:
 \begin{python}
 def generator_layer(w):
     qml.RY(w[0], wires=0)
@@ -299,8 +299,9 @@ def generator(w, **kwargs):
 
 A $QNode$ contains a quantum function and the computational device it is 
 executed on. We need to create two quantum nodes. One to train the discriminator,
-we feed the real data to the discriminator so that it can learn it. A second one
-where we feed generated data to train the generator.
+where the real data is fed to the discriminator so that it can learn it, and a
+second one where the generated data is fed to the discriminator in order to 
+train the generator.
 \begin{python}
 @qml.qnode(dev, interface='tf')
 def real_disc_circuit(angles, disc_weights):
@@ -417,7 +418,7 @@ cycle. A training cycle is defined by training the discriminator followed by
 training the generator.
 At the end of the complete train, the probability for the discriminator to 
 classify real data as true is $\approx$75\% and the probability to classify 
-generated data as true is $\approx$99\%. A complete train takes $\approx$35 
+generated data as true is $\approx$99\%. A complete train takes $\approx$40 
 minutes in my personal computer, this for a single event.
 
 \begin{figure}[!htbp]
@@ -455,15 +456,18 @@ latter is reported in Table~\ref{tab:res}.
 \begin{tabular}{lcccc}
 Data      & \ptl [GeV] & \mt [GeV] & \drLB & \ptmiss [GeV] \\
 \hline
-real   & 9.9   & 101.5 & 1.8 & 514.15 \\
-fake   & 13.7   & 72.8 & 1.5 & 458.85 \\
+real      & 9.9   & 102 & 1.8 & 514 \\
+generated & 13.7  &  73 & 1.5 & 459 \\
 \hline
-real      & 5.6   & 20 & 2.0 & 368 \\
-generated & 5.3   & 23 & 2.1 & 493 \\
+real      & 5.6   &  20 & 2.0 & 368 \\
+generated & 5.3   &  23 & 2.1 & 493 \\
 \hline
-real      & 18.9   & 81 & 3.1 & 340 \\
-generated & 20.6   & 42 & 3.3 & 377 \\ 
+real      & 18.9  &  81 & 3.1 & 340 \\
+generated & 20.6  &  42 & 3.3 & 377 \\ 
 \end{tabular}
 \label{tab:res}
 \end{table}
 
+To note that we don't want to create exactly the same events, but similar ones
+that would reproduce the real data statistics. This is what we see in 
+Table~\ref{tab:res}.
